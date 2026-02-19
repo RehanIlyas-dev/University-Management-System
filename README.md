@@ -1,46 +1,73 @@
-University Management System (Basic)
-A simple and efficient console-based application built using C++ to manage student records. This project is designed for beginners to understand the flow of data and basic programming logic.
+# 🎓 University Management System (C++)
 
-🚀 Features
-Add Student Records: Input student names, roll numbers, and marks.
+A console-based University Management System built using C++ with file handling.  
+It supports Admin and Student roles for managing student records, attendance, fees, hostel allocation, and feedback.
 
-View All Records: Display a list of all students stored in the system.
+---
 
-Search Functionality: Find a specific student using their Roll Number.
+## 🚀 Features
 
-Data Persistence: Uses File Handling to save data in .txt files so it doesn't disappear when you close the program.
+### 👨‍💼 Admin
+- Add, View, Update, Delete Students
+- Mark Attendance
+- View Feedback
+- Single Admin Restriction
 
-🛠️ Tech Stack
-Language: C++ (Procedural Programming)
+### 👨‍🎓 Student
+- View Profile
+- Check Attendance
+- Check Fee Status
+- View Hostel Info
+- Submit Feedback
 
-Storage: Text Files (.txt)
+---
 
-Environment: VS Code on Ubuntu
+## 🔐 Authentication
 
-📂 Project Structure
-Plaintext
-├── main.cpp          # Main logic and menu system
-├── students.txt      # Data file where records are saved
-└── README.md         # Project documentation
-⚙️ How to Run
-Clone the repository:
+- Only one Admin allowed.
+- Default Admin (auto-created if none exists):
+  
+  Username: admin  
+  Password: admin123  
 
-Bash
-git clone https://github.com/RehanIlyas-dev/University-Management-System.git
-cd University-Management-System
-Compile:
+- Credentials stored in `Users.txt`.
 
-Bash
-g++ main.cpp -o university_system
-Run:
+---
 
-Bash
-./university_system
-👤 Author
-Rehan
+## 📂 Data Files
 
-University: UET Lahore
+- `Users.txt` → Login data  
+- `Students.txt` → Student records  
+- `Feedback.txt` → Feedback messages  
 
-Registration No: 2025-CS-65
+---
 
-Current Focus: Learning C++ Fundamentals & Linux.
+## 🛠️ Tech Used
+
+- C++
+- fstream (File Handling)
+- windows.h (Console Colors)
+- conio.h
+
+---
+
+## ▶️ How to Run
+
+1. Open in any C++ IDE (CodeBlocks / Dev-C++ / Visual Studio).
+2. Compile and Run.
+3. Login as Admin or Student.
+
+---
+
+## ⚠️ Limitations
+
+- Max 100 users/students (fixed arrays)
+- No password encryption
+- Windows only
+- Console-based (no GUI)
+
+---
+
+## 📘 Purpose
+
+Built to practice C++ fundamentals, file handling, authentication, and CRUD operations.
