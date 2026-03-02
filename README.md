@@ -36,7 +36,6 @@
 - [🗂️ Data Storage](#️-data-storage)
 - [🚀 Getting Started](#-getting-started)
 - [📁 Project Structure](#-project-structure)
-- [🖥️ Screenshots](#️-screenshots)
 - [🛠️ Tech Stack](#️-tech-stack)
 - [🤝 Contributing](#-contributing)
 
@@ -107,89 +106,49 @@
 
 ---
 
-## 👨‍💼 Admin Features
+## 👨‍💼 Admin Features (16 Options)
 
-> **16 powerful tools** to manage the entire university from one dashboard
+**📋 Student Management**
+- `1` Add New Student — Register with department, fee & hostel details
+- `2` View All Students — List with attendance percentages
+- `3` Search Student — Find by roll number or name
+- `4` Update Student — Modify student details
+- `5` Delete Student — Remove a student record
 
-<details>
-<summary><b>📋 Student Management (5 options)</b></summary>
+**📚 Academics**
+- `6` Mark Attendance — Record present/absent
+- `7` Add Student Grade — Enter subject, credits & letter grade
+- `8` View Student Grades — See any student's grade report + CGPA
+- `9` Merit List — Students ranked by CGPA
+- `10` Department-wise Count — Students per department
+- `11` Add Exam Schedule — Set upcoming exam dates
 
-| # | Feature | Description |
-|---|---------|-------------|
-| 1 | ➕ **Add New Student** | Full registration with username, password, department, fee, and hostel details |
-| 2 | 👁️ **View All Students** | List all students with attendance percentages |
-| 3 | 🔍 **Search Student** | Find students by roll number or name |
-| 4 | ✏️ **Update Student** | Modify any student's information |
-| 5 | 🗑️ **Delete Student** | Remove a student from the system |
-
-</details>
-
-<details>
-<summary><b>📚 Academics (6 options)</b></summary>
-
-| # | Feature | Description |
-|---|---------|-------------|
-| 6 | ✅ **Mark Attendance** | Record present/absent for each student |
-| 7 | 📝 **Add Student Grade** | Enter subject name, credit hours, and letter grade |
-| 8 | 📊 **View Student Grades** | Check any student's full grade report + CGPA |
-| 9 | 🏆 **Merit List** | Auto-sorted ranking of all students by CGPA |
-| 10 | 📈 **Department Count** | See how many students are in each department |
-| 11 | 📅 **Exam Schedule** | Add upcoming exam dates for students to view |
-
-</details>
-
-<details>
-<summary><b>📢 Communication & Account (5 options)</b></summary>
-
-| # | Feature | Description |
-|---|---------|-------------|
-| 12 | 📢 **Post Announcement** | Broadcast notices to all students |
-| 13 | 💬 **View Feedback** | Read all student-submitted feedback |
-| 14 | 🧹 **Clear Feedback** | Wipe all feedback records |
-| 15 | 🔑 **Change Password** | Update admin credentials |
-| 16 | 🚪 **Logout** | Return to main login menu |
-
-</details>
+**📢 Communication & Account**
+- `12` Post Announcement — Broadcast notices to students
+- `13` View Feedback — Read student feedback
+- `14` Clear All Feedback — Wipe feedback records
+- `15` Change Password — Update admin credentials
+- `16` Logout
 
 ---
 
-## 🎓 Student Features
+## 🎓 Student Features (10 Options)
 
-> **10 essential tools** for students to track their academic life
+**👤 My Info**
+- `1` View Profile — Name, roll, department, class
+- `2` View Attendance — Attendance % with ⚠️ warning if below 75%
+- `3` Fee Receipt — Formatted receipt (PAID / UNPAID)
+- `4` Hostel Information — Assigned hostel & room number
+- `5` View CGPA — Grade report with calculated CGPA
 
-<details>
-<summary><b>👤 My Info (5 options)</b></summary>
+**🏫 University**
+- `6` View Exam Schedule — Upcoming exam dates
+- `7` View Announcements — Admin-posted notices
+- `8` Submit Feedback — Send feedback to admin
 
-| # | Feature | Description |
-|---|---------|-------------|
-| 1 | 👤 **View Profile** | See personal details (name, roll, department, class) |
-| 2 | 📊 **View Attendance** | Check attendance % with ⚠️ **warning if below 75%** |
-| 3 | 🧾 **Fee Receipt** | Formatted receipt with **PAID** / **UNPAID** status |
-| 4 | 🏠 **Hostel Info** | View assigned hostel name and room number |
-| 5 | 📈 **View CGPA** | Full grade report with calculated CGPA out of 4.0 |
-
-</details>
-
-<details>
-<summary><b>🏫 University (3 options)</b></summary>
-
-| # | Feature | Description |
-|---|---------|-------------|
-| 6 | 📅 **Exam Schedule** | View all upcoming exam dates |
-| 7 | 📢 **Announcements** | Read notices posted by admin |
-| 8 | 💬 **Submit Feedback** | Send feedback to admin |
-
-</details>
-
-<details>
-<summary><b>🔑 Account (2 options)</b></summary>
-
-| # | Feature | Description |
-|---|---------|-------------|
-| 9 | 🔑 **Change Password** | Update login credentials |
-| 10 | 🚪 **Logout** | Return to main login menu |
-
-</details>
+**🔑 Account**
+- `9` Change Password — Update credentials
+- `10` Logout
 
 ---
 
