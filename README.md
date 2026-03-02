@@ -12,7 +12,7 @@
 
 > 🏫 A complete university administration tool with **role-based access**, **CGPA tracking**, **attendance management**, **exam scheduling**, and much more — all from your terminal!
 >
-> 📘 **First Semester PF (Programming Fundamentals) Project** — Submitted to **Mam Maida** and **Sir Kamran Mustafa**
+> 📘 **First Semester PF (Programming Fundamentals) Project** — Submitted to **Mam Maida** and **Sir Kamran Mustafa** at **University of Engineering & Technology, Lahore**
 
 <br>
 
