@@ -157,6 +157,9 @@
 
 > **10 essential tools** for students to track their academic life
 
+<details>
+<summary><b>👤 My Info (5 options)</b></summary>
+
 | # | Feature | Description |
 |---|---------|-------------|
 | 1 | 👤 **View Profile** | See personal details (name, roll, department, class) |
@@ -164,11 +167,29 @@
 | 3 | 🧾 **Fee Receipt** | Formatted receipt with **PAID** / **UNPAID** status |
 | 4 | 🏠 **Hostel Info** | View assigned hostel name and room number |
 | 5 | 📈 **View CGPA** | Full grade report with calculated CGPA out of 4.0 |
+
+</details>
+
+<details>
+<summary><b>🏫 University (3 options)</b></summary>
+
+| # | Feature | Description |
+|---|---------|-------------|
 | 6 | 📅 **Exam Schedule** | View all upcoming exam dates |
 | 7 | 📢 **Announcements** | Read notices posted by admin |
 | 8 | 💬 **Submit Feedback** | Send feedback to admin |
+
+</details>
+
+<details>
+<summary><b>🔑 Account (2 options)</b></summary>
+
+| # | Feature | Description |
+|---|---------|-------------|
 | 9 | 🔑 **Change Password** | Update login credentials |
 | 10 | 🚪 **Logout** | Return to main login menu |
+
+</details>
 
 ---
 
@@ -268,52 +289,6 @@ University-Management-System/
     ├── 📄 Feedback.txt                        # Auto-generated
     ├── 📄 Exams.txt                           # Auto-generated
     └── 📄 Notices.txt                         # Auto-generated
-```
-
----
-
-## 🖥️ Screenshots
-
-### Login Menu
-```
-    +================================================+
-    |        UNIVERSITY MANAGEMENT SYSTEM            |
-    +================================================+
-
-    +------------------------------------------------+
-    |  Main Menu  >  Login                           |
-    +------------------------------------------------+
-
-    +================================================+
-    |                 LOGIN MENU                     |
-    +================================================+
-    |                                                 |
-    |    1.  Sign In as Admin                         |
-    |    2.  Sign In as Student                       |
-    |    3.  Exit                                     |
-    |                                                 |
-    +================================================+
-
-    Enter Choice :
-```
-
-### Admin Panel
-```
-    +================================================+
-    |            ADMIN CONTROL PANEL                  |
-    +================================================+
-    |                                                 |
-    |   STUDENT MANAGEMENT                            |
-    |    1.  Add New Student                          |
-    |    2.  View All Students                        |
-    |    3.  Search Student                           |
-    |    ...                                          |
-    |                                                 |
-    |   ACADEMICS                                     |
-    |    6.  Mark Attendance                          |
-    |    7.  Add Student Grade                        |
-    |    ...                                          |
-    +================================================+
 ```
 
 ---
