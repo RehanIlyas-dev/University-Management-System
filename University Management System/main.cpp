@@ -1,7 +1,7 @@
-#include <conio.h>
 #include <fstream>
 #include <iostream>
-#include <windows.h>
+#include <cstdlib>
+#include <iomanip>
 
 
 using namespace std;
@@ -10,7 +10,12 @@ using namespace std;
 // COLOR FUNCTION
 // --------------------------------------------------
 void setColor(int color) {
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+  if (color == 7)       cout << "\033[0m";   // Default
+  else if (color == 3)  cout << "\033[36m";  // Cyan
+  else if (color == 10) cout << "\033[32m";  // Green
+  else if (color == 12) cout << "\033[31m";  // Red
+  else if (color == 14) cout << "\033[33m";  // Yellow
+  else cout << "\033[0m";
 }
 // --------------------------------------------------
 // FILE HANDLING
@@ -41,6 +46,19 @@ void loadUsers(string userName[], string userPassword[], string userRole[],
     file.close(); // Closing file
   }
 }
+
+void rewriteUsers(string userName[], string userPassword[], string userRole[],
+                  int userCount) {
+  fstream file;
+  file.open("Users.txt", ios::out);
+  if (file.is_open()) {
+    for (int i = 0; i < userCount; i++) {
+      file << userName[i] << " " << userPassword[i] << " " << userRole[i] << endl;
+    }
+    file.close();
+  }
+}
+
 void saveStudent(string studentName, int studentRoll, string studentDepartment,
                  string studentClass, int studentFeeAmount, bool studentFeePaid,
                  bool studentHostelrequired, string HostelName, int hostelRoom,
@@ -116,30 +134,121 @@ void loadFeedback(string feedback[], int &feedbackCount) {
   }
 }
 
+void saveGrade(string username, string subject, int creditHours, float gradePoint) {
+  fstream file;
+  file.open("Grades.txt", ios::app);
+  if (file.is_open()) {
+    file << username << " " << subject << " " << creditHours << " " << gradePoint << endl;
+    file.close();
+  }
+}
+
+void loadGrades(string gradeUsername[], string gradeSubject[],
+                int gradeCreditHours[], float gradePoint[], int &gradeCount) {
+  fstream file;
+  file.open("Grades.txt", ios::in);
+  if (file.is_open()) {
+    gradeCount = 0;
+    while (file >> gradeUsername[gradeCount] >> gradeSubject[gradeCount] >>
+           gradeCreditHours[gradeCount] >> gradePoint[gradeCount]) {
+      gradeCount++;
+    }
+    file.close();
+  }
+}
+
+void saveExam(string subject, string date) {
+  fstream file;
+  file.open("Exams.txt", ios::app);
+  if (file.is_open()) {
+    file << subject << " " << date << endl;
+    file.close();
+  }
+}
+
+void loadExams(string examSubject[], string examDate[], int &examCount) {
+  fstream file;
+  file.open("Exams.txt", ios::in);
+  if (file.is_open()) {
+    examCount = 0;
+    while (file >> examSubject[examCount] >> examDate[examCount]) {
+      examCount++;
+    }
+    file.close();
+  }
+}
+
+void saveNotice(string notice) {
+  fstream file;
+  file.open("Notices.txt", ios::app);
+  if (file.is_open()) {
+    file << notice << endl;
+    file.close();
+  }
+}
+
+void loadNotices(string notices[], int &noticeCount) {
+  fstream file;
+  file.open("Notices.txt", ios::in);
+  if (file.is_open()) {
+    noticeCount = 0;
+    while (getline(file, notices[noticeCount])) {
+      noticeCount++;
+    }
+    file.close();
+  }
+}
+
 // -------------------------------------------------
-// HEADER FUNCTIONS
+// HEADER & DISPLAY FUNCTIONS
 // --------------------------------------------------
+void printLine(char ch, int len) {
+  for (int i = 0; i < len; i++) cout << ch;
+  cout << endl;
+}
+
+void printCentered(string text, int width) {
+  int padding = (width - text.length()) / 2;
+  if (padding < 0) padding = 0;
+  for (int i = 0; i < padding; i++) cout << " ";
+  cout << text << endl;
+}
+
 void printheader() {
-  system("cls");
+  system("clear");
   setColor(10);
-  cout << "==============================================\n";
-  cout << "||        UNIVERSITY MANAGEMENT SYSTEM      ||\n";
-  cout << "==============================================\n";
+  cout << "    +================================================+" << endl;
+  cout << "    |                                                |" << endl;
+  cout << "    |        UNIVERSITY MANAGEMENT SYSTEM            |" << endl;
+  cout << "    |                                                |" << endl;
+  cout << "    +================================================+" << endl;
   setColor(7);
+  cout << endl;
 }
 
 void printMenuHeader(string main, string sub) {
   setColor(3);
-  cout << "----------------------------------------------\n";
-  cout << " " << main << "  >  " << sub << endl;
-  cout << "----------------------------------------------\n\n";
+  cout << "    +------------------------------------------------+" << endl;
+  string nav = "  " + main + "  >  " + sub;
+  cout << "    |" << left << setw(48) << nav << "|" << endl;
+  cout << "    +------------------------------------------------+" << endl;
+  setColor(7);
+  cout << endl;
+}
+
+void printSectionTitle(string title) {
+  setColor(14);
+  cout << "    -- " << title << " ";
+  for (int i = 0; i < (int)(40 - title.length()); i++) cout << "-";
+  cout << endl;
   setColor(7);
 }
 
 void clearScreen() {
-  cout << "\nPress any key to continue...";
-  getch();
-  system("cls");
+  cout << "\nPress Enter to continue...";
+  cin.ignore();
+  cin.get();
+  system("clear");
 }
 
 // --------------------------------------------------
@@ -185,17 +294,51 @@ void initializeDefaultAdmin(string userName[], string userPassword[],
     }
   }
 
-  // If no admin exists, create default admin
+  // If no admin exists, prompt admin to sign up
   if (!adminExists) {
-    userName[userCount] = "admin";
-    userPassword[userCount] = "admin123";
+    printheader();
+    setColor(14);
+    cout << "    +================================================+" << endl;
+    cout << "    |       FIRST TIME SETUP - ADMIN SIGNUP          |" << endl;
+    cout << "    +================================================+" << endl;
+    setColor(7);
+    cout << endl;
+    cout << "    No admin account found. Please create one." << endl;
+    cout << endl;
+
+    string adminUser, adminPass, adminPassConfirm;
+
+    cout << "    Enter Admin Username : ";
+    cin >> adminUser;
+    cout << "    Enter Admin Password : ";
+    cin >> adminPass;
+    cout << "    Confirm Password     : ";
+    cin >> adminPassConfirm;
+
+    while (adminPass != adminPassConfirm) {
+      setColor(12);
+      cout << "\n    Passwords do not match! Try again.\n" << endl;
+      setColor(7);
+      cout << "    Enter Admin Password : ";
+      cin >> adminPass;
+      cout << "    Confirm Password     : ";
+      cin >> adminPassConfirm;
+    }
+
+    userName[userCount] = adminUser;
+    userPassword[userCount] = adminPass;
     userRole[userCount] = "Admin";
-    saveUser("admin", "admin123", "Admin");
+    saveUser(adminUser, adminPass, "Admin");
     userCount++;
-    cout << "Default Admin Created!\n";
-    cout << "Username: admin\n";
-    cout << "Password: admin123\n";
-    cout << "Please change the password after first login.\n";
+
+    setColor(10);
+    cout << endl;
+    cout << "    [*] Admin account created successfully!" << endl;
+    cout << "    Username: " << adminUser << endl;
+    setColor(7);
+    cout << "\n    Press Enter to continue...";
+    cin.ignore();
+    cin.get();
   }
 }
 string signInAdmin(string userName[], string userPassword[], string userRole[],
@@ -413,6 +556,57 @@ void deleteStudent(string studentName[], int studentRoll[],
 }
 
 // --------------------------------------------------
+// SEARCH STUDENT
+// --------------------------------------------------
+void searchStudent(string studentName[], int studentRoll[],
+                   string studentDepartment[], string studentClass[],
+                   int studentCount) {
+  int searchChoice;
+  cout << "Search by:\n";
+  cout << "1. Roll No\n";
+  cout << "2. Name\n";
+  cout << "Enter choice: ";
+  cin >> searchChoice;
+
+  if (searchChoice == 1) {
+    int roll;
+    cout << "Enter Roll No: ";
+    cin >> roll;
+    bool found = false;
+    for (int i = 0; i < studentCount; i++) {
+      if (studentRoll[i] == roll) {
+        found = true;
+        cout << "\n------- Student Found -------\n";
+        cout << "Name       : " << studentName[i] << endl;
+        cout << "Roll No    : " << studentRoll[i] << endl;
+        cout << "Department : " << studentDepartment[i] << endl;
+        cout << "Class      : " << studentClass[i] << endl;
+        break;
+      }
+    }
+    if (!found) cout << "\nStudent Not Found\n";
+  } else if (searchChoice == 2) {
+    string name;
+    cout << "Enter Name: ";
+    cin >> name;
+    bool found = false;
+    for (int i = 0; i < studentCount; i++) {
+      if (studentName[i] == name) {
+        found = true;
+        cout << "\n------- Student Found -------\n";
+        cout << "Name       : " << studentName[i] << endl;
+        cout << "Roll No    : " << studentRoll[i] << endl;
+        cout << "Department : " << studentDepartment[i] << endl;
+        cout << "Class      : " << studentClass[i] << endl;
+      }
+    }
+    if (!found) cout << "\nStudent Not Found\n";
+  } else {
+    cout << "\nInvalid Choice\n";
+  }
+}
+
+// --------------------------------------------------
 // ATTENDANCE & FEEDBACK
 // --------------------------------------------------
 void markAttendance(int studentRoll[], int totalClasses[],
@@ -452,9 +646,396 @@ void submitFeedback(string feedback[], int &feedbackCount, string user) {
 }
 
 void viewFeedback(string feedback[], int feedbackCount) {
+  if (feedbackCount == 0) {
+    cout << "No feedback available.\n";
+    return;
+  }
   for (int i = 0; i < feedbackCount; i++) {
     cout << i + 1 << ". " << feedback[i] << endl;
   }
+}
+
+// --------------------------------------------------
+// CLEAR FEEDBACK
+// --------------------------------------------------
+void clearFeedback(string feedback[], int &feedbackCount) {
+  fstream file;
+  file.open("Feedback.txt", ios::out);
+  if (file.is_open()) {
+    file.close();
+  }
+  feedbackCount = 0;
+  setColor(14);
+  cout << "\nAll feedback has been cleared!\n";
+  setColor(7);
+}
+
+// --------------------------------------------------
+// CGPA FUNCTIONS
+// --------------------------------------------------
+float gradeToPoint(char grade) {
+  if (grade == 'A' || grade == 'a') return 4.0;
+  if (grade == 'B' || grade == 'b') return 3.0;
+  if (grade == 'C' || grade == 'c') return 2.0;
+  if (grade == 'D' || grade == 'd') return 1.0;
+  return 0.0; // F or invalid
+}
+
+void addGrade(int studentRoll[], string studentUserName[], int studentCount,
+              string gradeUsername[], string gradeSubject[],
+              int gradeCreditHours[], float gradePoint[], int &gradeCount) {
+  int roll;
+  cout << "Enter Roll No of Student: ";
+  cin >> roll;
+
+  int idx = -1;
+  for (int i = 0; i < studentCount; i++) {
+    if (studentRoll[i] == roll) {
+      idx = i;
+      break;
+    }
+  }
+
+  if (idx == -1) {
+    cout << "\nStudent Not Found\n";
+    return;
+  }
+
+  string subject;
+  int credits;
+  char grade;
+
+  cout << "Enter Subject Name: ";
+  cin >> subject;
+  cout << "Enter Credit Hours: ";
+  cin >> credits;
+  cout << "Enter Grade (A/B/C/D/F): ";
+  cin >> grade;
+
+  float gp = gradeToPoint(grade);
+
+  gradeUsername[gradeCount] = studentUserName[idx];
+  gradeSubject[gradeCount] = subject;
+  gradeCreditHours[gradeCount] = credits;
+  gradePoint[gradeCount] = gp;
+
+  saveGrade(studentUserName[idx], subject, credits, gp);
+  gradeCount++;
+
+  cout << "\nGrade Added Successfully! (" << grade << " = " << gp << " points)\n";
+}
+
+void viewCGPA(string gradeUsername[], string gradeSubject[],
+              int gradeCreditHours[], float gradePoint[], int gradeCount,
+              string username) {
+  float totalPoints = 0;
+  int totalCredits = 0;
+  int subjectCount = 0;
+
+  cout << "\n---------- Grade Report ----------\n";
+  for (int i = 0; i < gradeCount; i++) {
+    if (gradeUsername[i] == username) {
+      cout << gradeSubject[i] << "  |  Credits: " << gradeCreditHours[i]
+           << "  |  Grade Point: " << gradePoint[i] << endl;
+      totalPoints += gradePoint[i] * gradeCreditHours[i];
+      totalCredits += gradeCreditHours[i];
+      subjectCount++;
+    }
+  }
+
+  if (subjectCount == 0) {
+    cout << "No grades found.\n";
+  } else {
+    float cgpa = totalPoints / totalCredits;
+    cout << "----------------------------------\n";
+    cout << "Total Subjects : " << subjectCount << endl;
+    cout << "Total Credits  : " << totalCredits << endl;
+    setColor(14);
+    cout << "CGPA           : " << cgpa << " / 4.0\n";
+    setColor(7);
+  }
+}
+
+// --------------------------------------------------
+// VIEW STUDENT GRADES (ADMIN - by roll)
+// --------------------------------------------------
+void viewStudentGrades(int studentRoll[], string studentUserName[],
+                       int studentCount, string gradeUsername[],
+                       string gradeSubject[], int gradeCreditHours[],
+                       float gradePoint[], int gradeCount) {
+  int roll;
+  cout << "Enter Roll No of Student: ";
+  cin >> roll;
+
+  int idx = -1;
+  for (int i = 0; i < studentCount; i++) {
+    if (studentRoll[i] == roll) {
+      idx = i;
+      break;
+    }
+  }
+
+  if (idx == -1) {
+    cout << "\nStudent Not Found\n";
+    return;
+  }
+
+  viewCGPA(gradeUsername, gradeSubject, gradeCreditHours, gradePoint,
+           gradeCount, studentUserName[idx]);
+}
+
+// --------------------------------------------------
+// ATTENDANCE WARNING
+// --------------------------------------------------
+void viewAttendanceWithWarning(int totalClasses[], int attendedClasses[],
+                               int idx) {
+  float percentage = 0;
+  if (totalClasses[idx] > 0)
+    percentage = (attendedClasses[idx] * 100.0) / totalClasses[idx];
+
+  cout << "Total Classes    : " << totalClasses[idx] << endl;
+  cout << "Classes Attended : " << attendedClasses[idx] << endl;
+  cout << "Attendance       : " << percentage << "%\n";
+
+  if (totalClasses[idx] > 0 && percentage < 75.0) {
+    setColor(12); // Red
+    cout << "\n** WARNING: Your attendance is below 75%! **\n";
+    cout << "** You may not be allowed to sit in exams. **\n";
+    setColor(7);
+  } else if (totalClasses[idx] > 0) {
+    setColor(10); // Green
+    cout << "\nAttendance is satisfactory.\n";
+    setColor(7);
+  }
+}
+
+// --------------------------------------------------
+// FEE RECEIPT
+// --------------------------------------------------
+void viewFeeReceipt(string studentName[], int studentRoll[],
+                    string studentDepartment[], int studentFeeAmount[],
+                    bool studentFeePaid[], int idx) {
+  cout << "\n============================================\n";
+  setColor(14);
+  cout << "          UNIVERSITY FEE RECEIPT\n";
+  setColor(7);
+  cout << "============================================\n";
+  cout << "  Name       : " << studentName[idx] << endl;
+  cout << "  Roll No    : " << studentRoll[idx] << endl;
+  cout << "  Department : " << studentDepartment[idx] << endl;
+  cout << "  Fee Amount : Rs. " << studentFeeAmount[idx] << endl;
+  cout << "--------------------------------------------\n";
+  if (studentFeePaid[idx]) {
+    setColor(10);
+    cout << "  Status     : ** PAID **\n";
+  } else {
+    setColor(12);
+    cout << "  Status     : ** UNPAID **\n";
+  }
+  setColor(7);
+  cout << "============================================\n";
+}
+
+// --------------------------------------------------
+// EXAM SCHEDULE
+// --------------------------------------------------
+void addExam(string examSubject[], string examDate[], int &examCount) {
+  cout << "Enter Subject Name: ";
+  cin >> examSubject[examCount];
+  cout << "Enter Exam Date (DD/MM/YYYY): ";
+  cin >> examDate[examCount];
+
+  saveExam(examSubject[examCount], examDate[examCount]);
+  examCount++;
+
+  cout << "\nExam Schedule Added Successfully!\n";
+}
+
+void viewExamSchedule(string examSubject[], string examDate[], int examCount) {
+  if (examCount == 0) {
+    cout << "No exam schedule available.\n";
+    return;
+  }
+  cout << "\n---------- Exam Schedule ----------\n";
+  for (int i = 0; i < examCount; i++) {
+    cout << i + 1 << ". " << examSubject[i] << "  |  Date: " << examDate[i] << endl;
+  }
+  cout << "-----------------------------------\n";
+}
+
+// --------------------------------------------------
+// ANNOUNCEMENTS / NOTICES
+// --------------------------------------------------
+void postNotice(string notices[], int &noticeCount) {
+  cin.ignore();
+  cout << "Enter Announcement: ";
+  getline(cin, notices[noticeCount]);
+
+  saveNotice(notices[noticeCount]);
+  noticeCount++;
+
+  cout << "\nAnnouncement Posted Successfully!\n";
+}
+
+void viewNotices(string notices[], int noticeCount) {
+  if (noticeCount == 0) {
+    cout << "No announcements available.\n";
+    return;
+  }
+  setColor(14);
+  cout << "\n========== ANNOUNCEMENTS ==========\n";
+  setColor(7);
+  for (int i = noticeCount - 1; i >= 0; i--) {
+    cout << "  " << noticeCount - i << ". " << notices[i] << endl;
+  }
+  cout << "===================================\n";
+}
+
+// --------------------------------------------------
+// MERIT LIST (sorted by CGPA)
+// --------------------------------------------------
+void viewMeritList(string studentName[], int studentRoll[],
+                   string studentUserName[], int studentCount,
+                   string gradeUsername[], int gradeCreditHours[],
+                   float gradePoint[], int gradeCount) {
+  if (studentCount == 0) {
+    cout << "No students available.\n";
+    return;
+  }
+
+  // Calculate CGPA for each student
+  float cgpaList[100];
+  for (int i = 0; i < studentCount; i++) {
+    float totalPoints = 0;
+    int totalCredits = 0;
+    for (int j = 0; j < gradeCount; j++) {
+      if (gradeUsername[j] == studentUserName[i]) {
+        totalPoints += gradePoint[j] * gradeCreditHours[j];
+        totalCredits += gradeCreditHours[j];
+      }
+    }
+    if (totalCredits > 0)
+      cgpaList[i] = totalPoints / totalCredits;
+    else
+      cgpaList[i] = 0.0;
+  }
+
+  // Create index array for sorting (don't modify original)
+  int sortedIdx[100];
+  for (int i = 0; i < studentCount; i++) sortedIdx[i] = i;
+
+  // Bubble sort by CGPA (descending)
+  for (int i = 0; i < studentCount - 1; i++) {
+    for (int j = 0; j < studentCount - i - 1; j++) {
+      if (cgpaList[sortedIdx[j]] < cgpaList[sortedIdx[j + 1]]) {
+        int temp = sortedIdx[j];
+        sortedIdx[j] = sortedIdx[j + 1];
+        sortedIdx[j + 1] = temp;
+      }
+    }
+  }
+
+  setColor(14);
+  cout << "\n============ MERIT LIST ============\n";
+  setColor(7);
+  cout << "Rank  Name            Roll   CGPA\n";
+  cout << "------------------------------------\n";
+  for (int i = 0; i < studentCount; i++) {
+    int s = sortedIdx[i];
+    cout << " " << i + 1 << ".    " << studentName[s]
+         << "\t\t" << studentRoll[s] << "\t" << cgpaList[s] << endl;
+  }
+  cout << "====================================\n";
+}
+
+// --------------------------------------------------
+// DEPARTMENT-WISE STUDENT COUNT
+// --------------------------------------------------
+void viewDepartmentCount(string studentDepartment[], int studentCount) {
+  if (studentCount == 0) {
+    cout << "No students available.\n";
+    return;
+  }
+
+  string departments[100];
+  int deptCount[100] = {0};
+  int totalDepts = 0;
+
+  for (int i = 0; i < studentCount; i++) {
+    bool found = false;
+    for (int j = 0; j < totalDepts; j++) {
+      if (departments[j] == studentDepartment[i]) {
+        deptCount[j]++;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      departments[totalDepts] = studentDepartment[i];
+      deptCount[totalDepts] = 1;
+      totalDepts++;
+    }
+  }
+
+  setColor(14);
+  cout << "\n===== Department-wise Student Count =====\n";
+  setColor(7);
+  for (int i = 0; i < totalDepts; i++) {
+    cout << "  " << departments[i] << " : " << deptCount[i] << " students\n";
+  }
+  cout << "  --------------------------\n";
+  cout << "  Total : " << studentCount << " students\n";
+  cout << "=========================================\n";
+}
+
+// --------------------------------------------------
+// CHANGE PASSWORD
+// --------------------------------------------------
+void changePassword(string userName[], string userPassword[], string userRole[],
+                    int userCount, string currentUser) {
+  string oldPass, newPass, confirmPass;
+
+  cout << "Enter Current Password: ";
+  cin >> oldPass;
+
+  int idx = -1;
+  for (int i = 0; i < userCount; i++) {
+    if (userName[i] == currentUser) {
+      idx = i;
+      break;
+    }
+  }
+
+  if (idx == -1) {
+    cout << "\nUser not found!\n";
+    return;
+  }
+
+  if (userPassword[idx] != oldPass) {
+    setColor(12);
+    cout << "\nIncorrect current password!\n";
+    setColor(7);
+    return;
+  }
+
+  cout << "Enter New Password: ";
+  cin >> newPass;
+  cout << "Confirm New Password: ";
+  cin >> confirmPass;
+
+  if (newPass != confirmPass) {
+    setColor(12);
+    cout << "\nPasswords do not match!\n";
+    setColor(7);
+    return;
+  }
+
+  userPassword[idx] = newPass;
+  rewriteUsers(userName, userPassword, userRole, userCount);
+
+  setColor(10);
+  cout << "\nPassword Changed Successfully!\n";
+  setColor(7);
 }
 
 // --------------------------------------------------
@@ -462,38 +1043,88 @@ void viewFeedback(string feedback[], int feedbackCount) {
 // --------------------------------------------------
 int adminMenu() {
   int op;
-  cout << "---------------------------------------------\n";
-  cout << "|               ADMIN PANEL                 |\n";
-  cout << "---------------------------------------------\n";
-  cout << "|  1. Press 1 to Add New Student            |\n";
-  cout << "|  2. Press 2 to View All Students          |\n";
-  cout << "|  3. Press 3 to Update Student             |\n";
-  cout << "|  4. Press 4 to Delete Student             |\n";
-  cout << "|  5. Press 5 to mark Attendance            |\n";
-  cout << "|  6. Press 6 to View Feedback              |\n";
-  cout << "|  7. Press 7 to Logout                     |\n";
-  cout << "---------------------------------------------\n";
-  cout << "Enter Option : ";
+  cout << "    +================================================+" << endl;
+  cout << "    |            ADMIN CONTROL PANEL                  |" << endl;
+  cout << "    +================================================+" << endl;
+  cout << "    |                                                 |" << endl;
+  setColor(3);
+  cout << "    |   STUDENT MANAGEMENT                            |" << endl;
+  setColor(7);
+  cout << "    |    1.  Add New Student                          |" << endl;
+  cout << "    |    2.  View All Students                        |" << endl;
+  cout << "    |    3.  Search Student                           |" << endl;
+  cout << "    |    4.  Update Student                           |" << endl;
+  cout << "    |    5.  Delete Student                           |" << endl;
+  cout << "    |                                                 |" << endl;
+  setColor(3);
+  cout << "    |   ACADEMICS                                     |" << endl;
+  setColor(7);
+  cout << "    |    6.  Mark Attendance                          |" << endl;
+  cout << "    |    7.  Add Student Grade                        |" << endl;
+  cout << "    |    8.  View Student Grades                      |" << endl;
+  cout << "    |    9.  Merit List                               |" << endl;
+  cout << "    |    10. Department-wise Count                    |" << endl;
+  cout << "    |    11. Add Exam Schedule                        |" << endl;
+  cout << "    |                                                 |" << endl;
+  setColor(3);
+  cout << "    |   COMMUNICATION                                 |" << endl;
+  setColor(7);
+  cout << "    |    12. Post Announcement                        |" << endl;
+  cout << "    |    13. View Feedback                            |" << endl;
+  cout << "    |    14. Clear All Feedback                       |" << endl;
+  cout << "    |                                                 |" << endl;
+  setColor(3);
+  cout << "    |   ACCOUNT                                       |" << endl;
+  setColor(7);
+  cout << "    |    15. Change Password                          |" << endl;
+  setColor(12);
+  cout << "    |    16. Logout                                   |" << endl;
+  setColor(7);
+  cout << "    |                                                 |" << endl;
+  cout << "    +================================================+" << endl;
+  cout << endl;
+  cout << "    Enter Option : ";
   cin >> op;
   return op;
 }
 
 int studentMenu() {
   int op;
-  cout << "----------------------------------------------\n";
-  cout << "|            STUDENT DASHBOARD               |\n";
-  cout << "----------------------------------------------\n";
-  cout << "|  1. Press 1 to view Profile                |\n";
-  cout << "|  2. Press 2 to View Attendance             |\n";
-  cout << "|  3. Press 3 to Check Fee Status            |\n";
-  cout << "|  4. Press 4 to Hostel Information          |\n";
-  cout << "|  5. Press 5 to Submit Feedback             |\n";
-  cout << "|  6. Press 6 to Logout                      |\n";
-  cout << "----------------------------------------------\n";
-  cout << "Enter Option : ";
+  cout << "    +================================================+" << endl;
+  cout << "    |             STUDENT DASHBOARD                   |" << endl;
+  cout << "    +================================================+" << endl;
+  cout << "    |                                                 |" << endl;
+  setColor(3);
+  cout << "    |   MY INFO                                       |" << endl;
+  setColor(7);
+  cout << "    |    1.  View Profile                             |" << endl;
+  cout << "    |    2.  View Attendance                          |" << endl;
+  cout << "    |    3.  Fee Receipt                              |" << endl;
+  cout << "    |    4.  Hostel Information                       |" << endl;
+  cout << "    |    5.  View CGPA                                |" << endl;
+  cout << "    |                                                 |" << endl;
+  setColor(3);
+  cout << "    |   UNIVERSITY                                    |" << endl;
+  setColor(7);
+  cout << "    |    6.  View Exam Schedule                       |" << endl;
+  cout << "    |    7.  View Announcements                       |" << endl;
+  cout << "    |    8.  Submit Feedback                          |" << endl;
+  cout << "    |                                                 |" << endl;
+  setColor(3);
+  cout << "    |   ACCOUNT                                       |" << endl;
+  setColor(7);
+  cout << "    |    9.  Change Password                          |" << endl;
+  setColor(12);
+  cout << "    |    10. Logout                                   |" << endl;
+  setColor(7);
+  cout << "    |                                                 |" << endl;
+  cout << "    +================================================+" << endl;
+  cout << endl;
+  cout << "    Enter Option : ";
   cin >> op;
   return op;
 }
+
 // --------------------------------------------------
 // ADMIN INTERFACE
 // --------------------------------------------------
@@ -505,9 +1136,14 @@ void adminInterface(string studentName[], int studentRoll[],
                     string studentUserName[], int &studentCount,
                     string userName[], string userPassword[], string userRole[],
                     int &userCount, int totalClasses[], int attendedClasses[],
-                    string feedback[], int &feedbackCount) {
+                    string feedback[], int &feedbackCount,
+                    string gradeUsername[], string gradeSubject[],
+                    int gradeCreditHours[], float gradePoint[], int &gradeCount,
+                    string examSubject[], string examDate[], int &examCount,
+                    string notices[], int &noticeCount,
+                    string currentUser) {
   int option = 0;
-  while (option != 7) {
+  while (option != 16) {
     printheader();
     printMenuHeader("Admin Panel", "Dashboard");
     option = adminMenu();
@@ -521,18 +1157,41 @@ void adminInterface(string studentName[], int studentRoll[],
       viewStudents(studentName, studentRoll, studentDepartment, studentClass,
                    totalClasses, attendedClasses, studentCount);
     } else if (option == 3) {
+      searchStudent(studentName, studentRoll, studentDepartment, studentClass,
+                    studentCount);
+    } else if (option == 4) {
       updateStudent(studentName, studentRoll, studentDepartment, studentClass,
                     studentFeeAmount, studentFeePaid, studentHostelRequired,
                     HostelName, hostelRoom, hostelAllocated, studentCount);
-    } else if (option == 4) {
+    } else if (option == 5) {
       deleteStudent(studentName, studentRoll, studentDepartment, studentClass,
                     studentFeeAmount, studentFeePaid, studentHostelRequired,
                     HostelName, hostelRoom, hostelAllocated, studentUserName,
                     studentCount);
-    } else if (option == 5) {
-      markAttendance(studentRoll, totalClasses, attendedClasses, studentCount);
     } else if (option == 6) {
+      markAttendance(studentRoll, totalClasses, attendedClasses, studentCount);
+    } else if (option == 7) {
+      addGrade(studentRoll, studentUserName, studentCount, gradeUsername,
+               gradeSubject, gradeCreditHours, gradePoint, gradeCount);
+    } else if (option == 8) {
+      viewStudentGrades(studentRoll, studentUserName, studentCount,
+                        gradeUsername, gradeSubject, gradeCreditHours,
+                        gradePoint, gradeCount);
+    } else if (option == 9) {
+      viewMeritList(studentName, studentRoll, studentUserName, studentCount,
+                    gradeUsername, gradeCreditHours, gradePoint, gradeCount);
+    } else if (option == 10) {
+      viewDepartmentCount(studentDepartment, studentCount);
+    } else if (option == 11) {
+      addExam(examSubject, examDate, examCount);
+    } else if (option == 12) {
+      postNotice(notices, noticeCount);
+    } else if (option == 13) {
       viewFeedback(feedback, feedbackCount);
+    } else if (option == 14) {
+      clearFeedback(feedback, feedbackCount);
+    } else if (option == 15) {
+      changePassword(userName, userPassword, userRole, userCount, currentUser);
     }
     clearScreen();
   }
@@ -549,7 +1208,12 @@ void studentInterface(string studentName[], int studentRoll[],
                       string studentUserName[], int &studentCount,
                       int totalClasses[], int attendedClasses[],
                       string feedback[], int &feedbackCount,
-                      string currentUser) {
+                      string currentUser,
+                      string gradeUsername[], string gradeSubject[],
+                      int gradeCreditHours[], float gradePoint[], int gradeCount,
+                      string examSubject[], string examDate[], int examCount,
+                      string notices[], int noticeCount,
+                      string userName[], string userPassword[], string userRole[], int userCount) {
   int option = 0;
   int idx = findStudent(studentUserName, studentCount, currentUser);
   if (idx == -1) {
@@ -558,7 +1222,14 @@ void studentInterface(string studentName[], int studentRoll[],
     return;
   }
 
-  while (option != 6) {
+  // Show announcements on login
+  if (noticeCount > 0) {
+    setColor(14);
+    cout << "\n** New Announcements Available! Check option 7. **\n";
+    setColor(7);
+  }
+
+  while (option != 10) {
     printheader();
     printMenuHeader("Student Panel", currentUser);
     option = studentMenu();
@@ -569,13 +1240,10 @@ void studentInterface(string studentName[], int studentRoll[],
       cout << "Department : " << studentDepartment[idx] << endl;
       cout << "Class      : " << studentClass[idx] << endl;
     } else if (option == 2) {
-      float percentage = 0;
-      if (totalClasses[idx] > 0)
-        percentage = (attendedClasses[idx] * 100.0) / totalClasses[idx];
-      cout << "Attendance : " << percentage << "%\n";
+      viewAttendanceWithWarning(totalClasses, attendedClasses, idx);
     } else if (option == 3) {
-      cout << "Fee Status : " << (studentFeePaid[idx] ? "Paid" : "Unpaid")
-           << endl;
+      viewFeeReceipt(studentName, studentRoll, studentDepartment,
+                     studentFeeAmount, studentFeePaid, idx);
     } else if (option == 4) {
       if (studentHostelRequired[idx] == true) {
         cout << "Hostel Name : " << HostelName[idx] << endl;
@@ -584,7 +1252,16 @@ void studentInterface(string studentName[], int studentRoll[],
         cout << "No Hostel Allocated\n";
       }
     } else if (option == 5) {
+      viewCGPA(gradeUsername, gradeSubject, gradeCreditHours, gradePoint,
+               gradeCount, currentUser);
+    } else if (option == 6) {
+      viewExamSchedule(examSubject, examDate, examCount);
+    } else if (option == 7) {
+      viewNotices(notices, noticeCount);
+    } else if (option == 8) {
       submitFeedback(feedback, feedbackCount, currentUser);
+    } else if (option == 9) {
+      changePassword(userName, userPassword, userRole, userCount, currentUser);
     }
     clearScreen();
   }
@@ -609,6 +1286,17 @@ int main() {
   string userName[100], userPassword[100], userRole[100];
   int userCount = 0;
 
+  string gradeUsername[500], gradeSubject[500];
+  int gradeCreditHours[500];
+  float gradePoint[500];
+  int gradeCount = 0;
+
+  string examSubject[100], examDate[100];
+  int examCount = 0;
+
+  string notices[100];
+  int noticeCount = 0;
+
   // LOADING DATA FROM FILES --->
 
   loadUsers(userName, userPassword, userRole, userCount);
@@ -617,6 +1305,9 @@ int main() {
                HostelName, hostelRoom, hostelAllocated, studentUserName,
                studentCount, temppassword);
   loadFeedback(feedback, feedbackCount);
+  loadGrades(gradeUsername, gradeSubject, gradeCreditHours, gradePoint, gradeCount);
+  loadExams(examSubject, examDate, examCount);
+  loadNotices(notices, noticeCount);
 
   initializeDefaultAdmin(userName, userPassword, userRole, userCount);
 
@@ -624,14 +1315,19 @@ int main() {
   while (choice != 3) {
     printheader();
     printMenuHeader("Main Menu", "Login");
-    cout << "----------------------------------------------\n";
-    cout << "|                LOGIN MENU                  |\n";
-    cout << "----------------------------------------------\n";
-    cout << "|  1. Press 1 to Sign In as Admin            |\n";
-    cout << "|  2. Press 2 to Sign In as Student          |\n";
-    cout << "|  3. Press 3 to Exit                        |\n";
-    cout << "----------------------------------------------\n";
-    cout << "Enter Choice : ";
+    cout << "    +================================================+" << endl;
+    cout << "    |                 LOGIN MENU                     |" << endl;
+    cout << "    +================================================+" << endl;
+    cout << "    |                                                 |" << endl;
+    cout << "    |    1.  Sign In as Admin                         |" << endl;
+    cout << "    |    2.  Sign In as Student                       |" << endl;
+    setColor(12);
+    cout << "    |    3.  Exit                                     |" << endl;
+    setColor(7);
+    cout << "    |                                                 |" << endl;
+    cout << "    +================================================+" << endl;
+    cout << endl;
+    cout << "    Enter Choice : ";
     cin >> choice;
 
     if (choice == 1) {
@@ -649,7 +1345,11 @@ int main() {
                        studentHostelRequired, HostelName, hostelRoom,
                        hostelAllocated, studentUserName, studentCount, userName,
                        userPassword, userRole, userCount, totalClasses,
-                       attendedClasses, feedback, feedbackCount);
+                       attendedClasses, feedback, feedbackCount,
+                       gradeUsername, gradeSubject, gradeCreditHours,
+                       gradePoint, gradeCount,
+                       examSubject, examDate, examCount,
+                       notices, noticeCount, u);
       } else {
         cout << "Invalid Admin Credentials\n";
         clearScreen();
@@ -668,7 +1368,12 @@ int main() {
             studentName, studentRoll, studentDepartment, studentClass,
             studentFeeAmount, studentFeePaid, studentHostelRequired, HostelName,
             hostelRoom, hostelAllocated, studentUserName, studentCount,
-            totalClasses, attendedClasses, feedback, feedbackCount, u);
+            totalClasses, attendedClasses, feedback, feedbackCount, u,
+            gradeUsername, gradeSubject, gradeCreditHours, gradePoint,
+            gradeCount,
+            examSubject, examDate, examCount,
+            notices, noticeCount,
+            userName, userPassword, userRole, userCount);
       } else {
         cout << "Invalid Student Credentials\n";
         clearScreen();
